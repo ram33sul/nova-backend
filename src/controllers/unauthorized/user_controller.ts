@@ -1,6 +1,6 @@
 import { Router } from "express";
-import controller from "./controller";
-import { postLogin, postRegister } from "../services/user_service";
+import controller from "../controller";
+import { postLogin, postRegister } from "../../services/user_service";
 
 const router = Router();
 

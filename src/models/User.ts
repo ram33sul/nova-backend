@@ -2,9 +2,6 @@ import mongoose, { ObjectId, Schema } from "mongoose";
 
 export interface IUser extends Document {
   roleId: ObjectId;
-  name: string;
-  dialCode: number;
-  mobile: number;
   email: string;
   password: string;
   isActive: boolean;
@@ -17,9 +14,6 @@ export interface IUser extends Document {
 const UserSchema = new Schema<IUser>(
   {
     roleId: { type: Object, required: true },
-    name: { type: String, required: true },
-    dialCode: { type: Number, required: true },
-    mobile: { type: Number, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     isActive: { type: Boolean, default: true },

@@ -5,16 +5,13 @@ import User from "../models/User";
 import { signJwt } from "../auth/jwt";
 
 export const postRegister = async ({ body }: Request) => {
-  const { name, dialCode, mobile, email, password } = body;
+  const { email, password } = body;
   const existingUser = await getUserByEmail(email);
   if (existingUser) {
     throw new Error("User already exist");
   }
   const hashedPassword = await bcrypt.hash(password, 10);
   const newUser = {
-    name,
-    dialCode,
-    mobile,
     email,
     password: hashedPassword,
   };
