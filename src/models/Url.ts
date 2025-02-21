@@ -1,8 +1,9 @@
 import mongoose, { ObjectId, Schema } from "mongoose";
-import { RoleName } from "../types/role";
+import { UrlType } from "../types/url";
 
-interface IRole extends Document {
-  name: RoleName;
+export interface IUrl extends Document {
+  url: string;
+  type: UrlType;
   isActive: boolean;
   createdBy: ObjectId;
   updatedBy: ObjectId;
@@ -10,14 +11,10 @@ interface IRole extends Document {
   updatedAt: Date;
 }
 
-const RoleSchema = new Schema<IRole>(
+const UrlSchema = new Schema<IUrl>(
   {
-    name: {
-      type: String,
-      enum: Object.keys(RoleName),
-      required: true,
-      unique: true,
-    },
+    url: { type: String, required: true },
+    type: { type: String, enum: Object.keys(UrlType), required: true },
     isActive: { type: Boolean, default: true },
     createdBy: { type: Object, default: null },
     updatedBy: { type: Object, default: null },
@@ -27,5 +24,5 @@ const RoleSchema = new Schema<IRole>(
   }
 );
 
-const Role = mongoose.model<IRole>("Role", RoleSchema);
-export default Role;
+const Url = mongoose.model<IUrl>("Url", UrlSchema);
+export default Url;
