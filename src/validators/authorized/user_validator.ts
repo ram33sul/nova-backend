@@ -1,4 +1,4 @@
-import yup from "yup";
+import * as yup from "yup";
 import { RoleName } from "../../types/role";
 
 export const userValidator = {

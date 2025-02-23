@@ -1,4 +1,4 @@
-import yup from "yup";
+import * as yup from "yup";
 import { KycStatus } from "../../types/kyc";
 import { UrlType } from "../../types/url";
 
