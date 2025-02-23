@@ -18,6 +18,7 @@ export const validator =
           abortEarly: true,
         });
       }
+      _next();
     } catch (error) {
       res.status(400).send({
         message: "Invalid Inputs",
