@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getKycUser = exports.getKycList = exports.putKycStatus = exports.postKyc = void 0;
+exports.getKycReport = exports.getKycUser = exports.getKycList = exports.putKycStatus = exports.postKyc = void 0;
 const Url_1 = __importDefault(require("../models/Url"));
 const Kyc_1 = __importDefault(require("../models/Kyc"));
 const object_id_1 = require("../utils/object_id");
@@ -147,3 +147,67 @@ const getKycUser = (_a) => __awaiter(void 0, [_a], void 0, function* ({ headers 
     return kyc;
 });
 exports.getKycUser = getKycUser;
+const getKycReport = () => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b, _c, _d;
+    const [usersCount, [kycs]] = yield Promise.all([
+        User_1.default.countDocuments({
+            isActive: true,
+        }),
+        Kyc_1.default.aggregate([
+            {
+                $match: {
+                    isActive: true,
+                },
+            },
+            {
+                $group: {
+                    _id: null,
+                    total: {
+                        $sum: 1,
+                    },
+                    pending: {
+                        $sum: {
+                            $cond: [
+                                {
+                                    status: kyc_1.KycStatus.PENDING,
+                                },
+                                1,
+                                0,
+                            ],
+                        },
+                    },
+                    approved: {
+                        $sum: {
+                            $cond: [
+                                {
+                                    status: kyc_1.KycStatus.APPROVED,
+                                },
+                                1,
+                                0,
+                            ],
+                        },
+                    },
+                    rejected: {
+                        $sum: {
+                            $cond: [
+                                {
+                                    status: kyc_1.KycStatus.REJECTED,
+                                },
+                                1,
+                                0,
+                            ],
+                        },
+                    },
+                },
+            },
+        ]),
+    ]);
+    return {
+        usersCount,
+        kycsTotalCount: (_a = kycs === null || kycs === void 0 ? void 0 : kycs.total) !== null && _a !== void 0 ? _a : 0,
+        kycsPendingCount: (_b = kycs === null || kycs === void 0 ? void 0 : kycs.pending) !== null && _b !== void 0 ? _b : 0,
+        kycsApprovedCount: (_c = kycs === null || kycs === void 0 ? void 0 : kycs.approved) !== null && _c !== void 0 ? _c : 0,
+        kycsRejectedCount: (_d = kycs === null || kycs === void 0 ? void 0 : kycs.rejected) !== null && _d !== void 0 ? _d : 0,
+    };
+});
+exports.getKycReport = getKycReport;

@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import { initializeRoles } from "../initializers/roleInitializer";
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ const connect = async () => {
     }
     await mongoose.connect(mongoURI);
     console.log("MongoDB connected successfully");
+    await initializeRoles();
   } catch (error) {
     console.error("MongoDB Connection Error:", error);
     process.exit(1);

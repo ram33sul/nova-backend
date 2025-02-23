@@ -12,26 +12,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const dotenv_1 = __importDefault(require("dotenv"));
-const mongoose_1 = __importDefault(require("mongoose"));
-const roleInitializer_1 = require("../initializers/roleInitializer");
-dotenv_1.default.config();
-const mongoURI = process.env.MONGO_URI;
-const connect = () => __awaiter(void 0, void 0, void 0, function* () {
+exports.initializeRoles = void 0;
+const Role_1 = __importDefault(require("../models/Role"));
+const role_1 = require("../types/role");
+const defaultRoles = Object.keys(role_1.RoleName);
+const initializeRoles = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        if (!mongoURI) {
-            throw {
-                status: 500,
-                message: "Mongo URI is not configured!",
-            };
+        const existingRoles = yield Role_1.default.find({ name: { $in: defaultRoles } });
+        const existingRoleNames = existingRoles.map((role) => role.name);
+        const missingRoles = defaultRoles.filter((role) => !existingRoleNames.includes(role));
+        if (missingRoles.length > 0) {
+            yield Role_1.default.insertMany(missingRoles.map((name) => ({ name })));
+            console.log("Roles populated successfully:", missingRoles);
         }
-        yield mongoose_1.default.connect(mongoURI);
-        console.log("MongoDB connected successfully");
-        yield (0, roleInitializer_1.initializeRoles)();
+        else {
+            console.log("All default roles already exist. No action taken.");
+        }
     }
     catch (error) {
-        console.error("MongoDB Connection Error:", error);
-        process.exit(1);
+        console.error("Error populating roles:", error);
     }
 });
-exports.default = connect;
+exports.initializeRoles = initializeRoles;

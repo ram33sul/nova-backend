@@ -2,7 +2,7 @@ import { Request } from "express";
 import Url from "../models/Url";
 import Kyc from "../models/Kyc";
 import { ObjectId } from "../utils/object_id";
-import { KycSortBy } from "../types/kyc";
+import { KycSortBy, KycStatus } from "../types/kyc";
 import User from "../models/User";
 
 export const postKyc = async ({ body, headers }: Request) => {
@@ -145,4 +145,67 @@ export const getKycUser = async ({ headers }: Request) => {
     isActive: true,
   });
   return kyc;
+};
+
+export const getKycReport = async () => {
+  const [usersCount, [kycs]] = await Promise.all([
+    User.countDocuments({
+      isActive: true,
+    }),
+    Kyc.aggregate([
+      {
+        $match: {
+          isActive: true,
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: {
+            $sum: 1,
+          },
+          pending: {
+            $sum: {
+              $cond: [
+                {
+                  status: KycStatus.PENDING,
+                },
+                1,
+                0,
+              ],
+            },
+          },
+          approved: {
+            $sum: {
+              $cond: [
+                {
+                  status: KycStatus.APPROVED,
+                },
+                1,
+                0,
+              ],
+            },
+          },
+          rejected: {
+            $sum: {
+              $cond: [
+                {
+                  status: KycStatus.REJECTED,
+                },
+                1,
+                0,
+              ],
+            },
+          },
+        },
+      },
+    ]),
+  ]);
+  return {
+    usersCount,
+    kycsTotalCount: kycs?.total ?? 0,
+    kycsPendingCount: kycs?.pending ?? 0,
+    kycsApprovedCount: kycs?.approved ?? 0,
+    kycsRejectedCount: kycs?.rejected ?? 0,
+  };
 };
