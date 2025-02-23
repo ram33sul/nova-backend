@@ -1,40 +1,70 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.kycValidator = void 0;
-const yup_1 = __importDefault(require("yup"));
+const yup = __importStar(require("yup"));
 const kyc_1 = require("../../types/kyc");
 const url_1 = require("../../types/url");
 exports.kycValidator = {
     GET: {
         "/list": {
-            query: yup_1.default.object({
-                status: yup_1.default.string().oneOf(Object.keys(kyc_1.KycStatus)),
-                name: yup_1.default.string(),
-                sortBy: yup_1.default.string(),
-                page: yup_1.default.number().min(0),
-                pageSize: yup_1.default.number().max(100),
+            query: yup.object({
+                status: yup.string().oneOf(Object.keys(kyc_1.KycStatus)),
+                name: yup.string(),
+                sortBy: yup.string(),
+                page: yup.number().min(0),
+                pageSize: yup.number().max(100),
             }),
         },
     },
     POST: {
         "/": {
-            body: yup_1.default.object({
-                name: yup_1.default.string().required(),
-                dialCode: yup_1.default.string().required(),
-                mobile: yup_1.default.string().required(),
-                url: yup_1.default.string().required(),
-                urlType: yup_1.default.string().required().oneOf(Object.keys(url_1.UrlType)),
+            body: yup.object({
+                name: yup.string().required(),
+                dialCode: yup.string().required(),
+                mobile: yup.string().required(),
+                url: yup.string().required(),
+                urlType: yup.string().required().oneOf(Object.keys(url_1.UrlType)),
             }),
         },
     },
     PUT: {
         "/status": {
-            body: yup_1.default.object({
-                kycId: yup_1.default.string().required(),
-                status: yup_1.default.string().required().oneOf(Object.keys(kyc_1.KycStatus)),
+            body: yup.object({
+                kycId: yup.string().required(),
+                status: yup.string().required().oneOf(Object.keys(kyc_1.KycStatus)),
             }),
         },
     },
