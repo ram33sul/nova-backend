@@ -18,7 +18,7 @@ interface IKyc extends Document {
 const KycShcema = new Schema<IKyc>(
   {
     userId: {
-      type: String,
+      type: Object,
       required: true,
     },
     name: {
@@ -34,7 +34,7 @@ const KycShcema = new Schema<IKyc>(
       required: true,
     },
     urlId: {
-      type: String,
+      type: Object,
       required: true,
     },
     status: {

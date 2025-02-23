@@ -8,7 +8,10 @@ const mongoURI = process.env.MONGO_URI;
 const connect = async () => {
   try {
     if (!mongoURI) {
-      throw new Error("Mongo URI is not configured!");
+      throw {
+        status: 500,
+        message: "Mongo URI is not configured!",
+      };
     }
     await mongoose.connect(mongoURI);
     console.log("MongoDB connected successfully");

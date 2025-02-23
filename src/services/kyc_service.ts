@@ -46,8 +46,8 @@ export const putKycStatus = async ({ body }: Request) => {
 
 export const getKycList = async ({ query }: Request) => {
   const {
-    status,
-    name,
+    status = "",
+    name = "",
     sortBy = KycSortBy.CREATED_DESC,
     page = "0",
     pageSize = "12",
@@ -57,7 +57,7 @@ export const getKycList = async ({ query }: Request) => {
     {
       $match: {
         ...(status ? { status } : null),
-        name: { $regex: `/${name}/` },
+        name: { $regex: name },
         isActive: true,
       },
     },
@@ -96,14 +96,53 @@ export const getKycList = async ({ query }: Request) => {
       },
     },
     {
+      $lookup: {
+        from: Url.collection.name,
+        localField: "urlId",
+        foreignField: "_id",
+        as: "url",
+        pipeline: [
+          {
+            $match: {
+              isActive: true,
+            },
+          },
+          {
+            $project: {
+              url: 1,
+              type: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
       $addFields: {
-        user: {
-          $first: "$user",
+        email: {
+          $first: "$user.email",
+        },
+        url: {
+          $first: "$url.url",
+        },
+        urlType: {
+          $first: "$url.type",
         },
       },
+    },
+    {
+      $unset: ["user"],
     },
   ]);
   return {
     kycList,
   };
+};
+
+export const getKycUser = async ({ headers }: Request) => {
+  const userId = headers.userId as string;
+  const kyc = await Kyc.findOne({
+    userId: ObjectId(userId),
+    isActive: true,
+  });
+  return kyc;
 };

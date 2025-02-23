@@ -7,24 +7,24 @@ interface Payload {
   signedAt: string;
 }
 
-export const signJwt = (userId: string, options: SignOptions) => {
+export const signJwt = (payload: Payload, options: SignOptions) => {
   const secretKey = process.env.JWT_SECRET_KEY;
   if (!secretKey) {
-    throw new Error("JWT Secret key is not configured!");
+    throw {
+      status: 500,
+      message: "JWT Secret key is not configured!",
+    };
   }
-  return jwt.sign(
-    {
-      userId,
-    },
-    secretKey,
-    options
-  );
+  return jwt.sign(payload, secretKey, options);
 };
 
 export const verifyJwt = (token: string) => {
   const secretKey = process.env.JWT_SECRET_KEY;
   if (!secretKey) {
-    throw new Error("JWT Secret key is not configured!");
+    throw {
+      status: 500,
+      message: "JWT Secret key is not configured!",
+    };
   }
   return jwt.verify(token, secretKey) as Payload;
 };

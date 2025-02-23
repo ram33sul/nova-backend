@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import connect from "./config/database";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import router from "./routers";
 
 dotenv.config();
 connect();
@@ -15,10 +16,12 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:3001",
+    origin: "*",
     credentials: true,
   })
 );
+
+app.use("/api", router);
 
 app.use("/health", (_, res: Response) => {
   res.send("Server is healthy");

@@ -5,7 +5,10 @@ export const validateRole =
   (roles: RoleName[]) => (req: Request, _: Response, _next: NextFunction) => {
     const role = req.headers.role as RoleName;
     if (!roles.includes(role)) {
-      throw new Error("Unauthorized");
+      throw {
+        status: 401,
+        message: "Unauthorized",
+      };
     }
     _next();
   };
