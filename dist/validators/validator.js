@@ -20,6 +20,7 @@ const validator = (params) => (req, res, _next) => __awaiter(void 0, void 0, voi
                 abortEarly: true,
             });
         }
+        _next();
     }
     catch (error) {
         res.status(400).send({
