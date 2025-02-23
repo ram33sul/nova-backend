@@ -6,7 +6,7 @@ COPY package*.json ./
 
 RUN npm install
 
-ENV NODE_OPTIONS="--max-old-space-size=2048"
+ENV NODE_OPTIONS="--max-old-space-size=1024"
 
 COPY . .
 
