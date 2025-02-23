@@ -6,6 +6,8 @@ COPY package*.json ./
 
 RUN npm install
 
+ENV NODE_OPTIONS="--max-old-space-size=2048"
+
 COPY . .
 
 RUN npm run build
