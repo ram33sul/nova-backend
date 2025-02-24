@@ -14,9 +14,16 @@ const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
+
+const allowedOrigins = new Set([
+  process.env.USER_FRONTEND_URL,
+  process.env.ADMIN_FRONTEND_URL,
+]);
+
 app.use(
   cors({
-    origin: "*",
+    origin: (origin, callback) =>
+      callback(null, !origin || allowedOrigins.has(origin)),
     credentials: true,
   })
 );

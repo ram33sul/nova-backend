@@ -15,8 +15,12 @@ const PORT = process.env.PORT;
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((0, cookie_parser_1.default)());
+const allowedOrigins = new Set([
+    process.env.USER_FRONTEND_URL,
+    process.env.ADMIN_FRONTEND_URL,
+]);
 app.use((0, cors_1.default)({
-    origin: "*",
+    origin: (origin, callback) => callback(null, !origin || allowedOrigins.has(origin)),
     credentials: true,
 }));
 app.use("/api", routers_1.default);
