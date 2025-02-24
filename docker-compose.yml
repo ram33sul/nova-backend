@@ -17,6 +17,8 @@ services:
       AWS_ACCESS_KEY: ""
       AWS_SECRET_ACCESS_KEY: ""
       AWS_S3_ASSETS_BUCKET: ""
+      USER_FRONTEND_URL: ""
+      ADMIN_FRONTEND_URL: ""
     volumes:
       - .:/app
       - /app/node_modules
